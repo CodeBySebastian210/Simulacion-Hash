@@ -1,3 +1,4 @@
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -8,8 +9,10 @@
  *
  * @author Lenovo
  */
-public class SimuladorHash extends javax.swing.JFrame {
+import javax.swing.JOptionPane;
 
+public class SimuladorHash extends javax.swing.JFrame {
+    private java.util.List<Integer>[] tabla;
     /**
      * Creates new form SimuladorHash
      */
@@ -46,8 +49,18 @@ public class SimuladorHash extends javax.swing.JFrame {
         jLabel2.setText("Clave:");
 
         btnCrear.setText("Crear tabla");
+        btnCrear.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCrearActionPerformed(evt);
+            }
+        });
 
         btnInsertar.setText("Insertar");
+        btnInsertar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnInsertarActionPerformed(evt);
+            }
+        });
 
         btnBuscar.setText("Buscar");
 
@@ -55,13 +68,13 @@ public class SimuladorHash extends javax.swing.JFrame {
 
         tablaHash.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null}
+                {null, null},
+                {null, null},
+                {null, null},
+                {null, null}
             },
             new String [] {
-                "Title 1", "Title 2", "Title 3", "Title 4", "Posición", "Valores"
+                "Posición", "Valores"
             }
         ));
         jScrollPane1.setViewportView(tablaHash);
@@ -104,7 +117,7 @@ public class SimuladorHash extends javax.swing.JFrame {
                     .addGroup(layout.createSequentialGroup()
                         .addGap(229, 229, 229)
                         .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(106, Short.MAX_VALUE))
+                .addContainerGap(94, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -137,6 +150,56 @@ public class SimuladorHash extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void btnCrearActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCrearActionPerformed
+        // TODO add your handling code here:
+        try {
+            int n = Integer.parseInt(txtTamano.getText().trim());
+            if (n <= 0) throw new NumberFormatException();
+
+            tabla = new java.util.ArrayList[n];
+            for (int i = 0; i < n; i++) {
+                tabla[i] = new java.util.ArrayList<>();
+            }
+
+            javax.swing.table.DefaultTableModel modelo = (javax.swing.table.DefaultTableModel) tablaHash.getModel();
+            modelo.setRowCount(0);
+            for (int i = 0; i < n; i++) {
+                modelo.addRow(new Object[]{i, "[]"});
+            }
+
+            areaLog.append("Tabla hash creada con tamaño " + n + "\n");
+
+            btnInsertar.setEnabled(true);
+            btnBuscar.setEnabled(true);
+            txtClave.setEnabled(true);
+
+        } catch (NumberFormatException ex) {
+            JOptionPane.showMessageDialog(this, "El tamaño N debe ser un número entero > 0", "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_btnCrearActionPerformed
+
+    private void btnInsertarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnInsertarActionPerformed
+        // TODO add your handling code here:
+        try {
+            int clave = Integer.parseInt(txtClave.getText().trim());
+            int n = tabla.length;
+            int pos = clave % n; 
+
+            tabla[pos].add(clave);
+
+            javax.swing.table.DefaultTableModel modelo = (javax.swing.table.DefaultTableModel) tablaHash.getModel();
+            modelo.setValueAt(tabla[pos].toString(), pos, 1);
+
+            areaLog.append("Insertado " + clave + " en posición " + pos + "\n");
+            txtClave.setText("");
+
+        } catch (NumberFormatException ex) {
+            JOptionPane.showMessageDialog(this, "Ingrese una clave numérica válida", "Error", JOptionPane.ERROR_MESSAGE);
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Primero cree la tabla", "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_btnInsertarActionPerformed
 
     /**
      * @param args the command line arguments
