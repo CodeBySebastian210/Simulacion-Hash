@@ -9,9 +9,11 @@
  *
  * @author Lenovo
  */
+import java.util.Iterator;
 import javax.swing.JOptionPane;
 
 public class SimuladorHash extends javax.swing.JFrame {
+    private int comparaciones = 0;
     private java.util.List<Integer>[] tabla;
     /**
      * Creates new form SimuladorHash
@@ -36,11 +38,11 @@ public class SimuladorHash extends javax.swing.JFrame {
         btnCrear = new javax.swing.JButton();
         btnInsertar = new javax.swing.JButton();
         btnBuscar = new javax.swing.JButton();
-        btnLimpiar = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         tablaHash = new javax.swing.JTable();
         jScrollPane2 = new javax.swing.JScrollPane();
         areaLog = new javax.swing.JTextArea();
+        btnEliminar = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -63,8 +65,11 @@ public class SimuladorHash extends javax.swing.JFrame {
         });
 
         btnBuscar.setText("Buscar");
-
-        btnLimpiar.setText("Limpiar");
+        btnBuscar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnBuscarActionPerformed(evt);
+            }
+        });
 
         tablaHash.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -85,6 +90,13 @@ public class SimuladorHash extends javax.swing.JFrame {
         areaLog.setRows(5);
         jScrollPane2.setViewportView(areaLog);
 
+        btnEliminar.setText("Eliminar");
+        btnEliminar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnEliminarActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -92,32 +104,30 @@ public class SimuladorHash extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(47, 47, 47)
+                        .addGap(172, 172, 172)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(btnCrear)
-                                .addGap(52, 52, 52)
-                                .addComponent(btnInsertar)
-                                .addGap(111, 111, 111)
-                                .addComponent(btnBuscar)
-                                .addGap(18, 18, 18)
-                                .addComponent(btnLimpiar))
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                                    .addComponent(jLabel1)
-                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(txtTamano, javax.swing.GroupLayout.PREFERRED_SIZE, 118, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                                    .addComponent(jLabel2)
-                                    .addGap(160, 160, 160)
-                                    .addComponent(txtClave, javax.swing.GroupLayout.PREFERRED_SIZE, 118, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                            .addComponent(jLabel1, javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jLabel2, javax.swing.GroupLayout.Alignment.TRAILING))
+                        .addGap(18, 18, 18)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(txtTamano, javax.swing.GroupLayout.PREFERRED_SIZE, 190, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(txtClave, javax.swing.GroupLayout.PREFERRED_SIZE, 190, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(85, 85, 85)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(181, 181, 181)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(btnCrear)
+                            .addComponent(btnInsertar, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(69, 69, 69)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(btnBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, 79, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(btnEliminar)))
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(229, 229, 229)
-                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(94, Short.MAX_VALUE))
+                        .addGap(133, 133, 133)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 385, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(151, 151, 151)
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 350, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(135, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -130,22 +140,19 @@ public class SimuladorHash extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
                     .addComponent(txtClave, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(16, 16, 16)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnBuscar)
+                    .addComponent(btnCrear))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(47, 47, 47)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(btnCrear)
-                            .addComponent(btnInsertar))
-                        .addGap(53, 53, 53)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(55, 55, 55)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(btnBuscar)
-                            .addComponent(btnLimpiar))))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 25, Short.MAX_VALUE)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(116, 116, 116))
+                    .addComponent(btnInsertar)
+                    .addComponent(btnEliminar))
+                .addGap(18, 18, 18)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(78, Short.MAX_VALUE))
         );
 
         pack();
@@ -185,13 +192,14 @@ public class SimuladorHash extends javax.swing.JFrame {
             int clave = Integer.parseInt(txtClave.getText().trim());
             int n = tabla.length;
             int pos = clave % n; 
-
+            
+            comparaciones = 1;
             tabla[pos].add(clave);
 
             javax.swing.table.DefaultTableModel modelo = (javax.swing.table.DefaultTableModel) tablaHash.getModel();
             modelo.setValueAt(tabla[pos].toString(), pos, 1);
 
-            areaLog.append("Insertado " + clave + " en posición " + pos + "\n");
+            areaLog.append("Comparaciones en inserción: " + comparaciones + "\n");
             txtClave.setText("");
 
         } catch (NumberFormatException ex) {
@@ -200,6 +208,91 @@ public class SimuladorHash extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, "Primero cree la tabla", "Error", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_btnInsertarActionPerformed
+
+    private void btnBuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarActionPerformed
+        // TODO add your handling code here:
+        try {
+            int clave = Integer.parseInt(txtClave.getText().trim());
+            int n = tabla.length;
+            int pos = clave % n; 
+            
+            comparaciones = 1;
+            boolean encontrado = false;
+            for (int val : tabla[pos]) {
+                comparaciones++;
+                if (val == clave) {
+                    encontrado = true;
+                    break;
+                }
+            }
+
+            
+            tablaHash.setRowSelectionInterval(pos, pos);
+
+            if (encontrado) {
+                areaLog.append("Clave " + clave + " encontrada en posición " + pos + "\n");
+                JOptionPane.showMessageDialog(this, 
+                        "Clave " + clave + " encontrada en posición " + pos, 
+                        "Resultado de búsqueda", 
+                        JOptionPane.INFORMATION_MESSAGE);
+            } else {
+                areaLog.append("Clave " + clave + " NO encontrada en posición " + pos + "\n");
+                JOptionPane.showMessageDialog(this, 
+                        "Clave " + clave + " NO encontrada en posición " + pos, 
+                        "Resultado de búsqueda", 
+                        JOptionPane.WARNING_MESSAGE);
+            }
+
+            areaLog.append("Comparaciones en búsqueda: " + comparaciones + "\n");
+            txtClave.setText("");
+
+        } catch (NumberFormatException ex) {
+            JOptionPane.showMessageDialog(this, "Ingrese una clave numérica válida", "Error", JOptionPane.ERROR_MESSAGE);
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Primero cree la tabla", "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_btnBuscarActionPerformed
+
+    private void btnEliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEliminarActionPerformed
+        // TODO add your handling code here:
+        try {
+            int clave = Integer.parseInt(txtClave.getText().trim());
+            int n = tabla.length;
+            int pos = clave % n;
+
+            comparaciones = 1; 
+
+            boolean eliminado = false;
+            Iterator<Integer> it = tabla[pos].iterator();
+            while (it.hasNext()) {
+                comparaciones++;
+                if (it.next() == clave) {
+                    it.remove();
+                    eliminado = true;
+                    break;
+                }
+            }
+
+            javax.swing.table.DefaultTableModel modelo = (javax.swing.table.DefaultTableModel) tablaHash.getModel();
+            modelo.setValueAt(tabla[pos].toString(), pos, 1);
+
+            if (eliminado) {
+                areaLog.append("Clave " + clave + " eliminada de posición " + pos + "\n");
+                JOptionPane.showMessageDialog(this, "Clave " + clave + " eliminada de posición " + pos, "Eliminar", JOptionPane.INFORMATION_MESSAGE);
+            } else {
+                areaLog.append("Clave " + clave + " NO encontrada para eliminar en posición " + pos + "\n");
+                JOptionPane.showMessageDialog(this, "Clave " + clave + " NO encontrada en posición " + pos, "Eliminar", JOptionPane.WARNING_MESSAGE);
+            }
+
+            areaLog.append("Comparaciones en eliminación: " + comparaciones + "\n");
+            txtClave.setText("");
+
+        } catch (NumberFormatException ex) {
+            JOptionPane.showMessageDialog(this, "Ingrese una clave numérica válida", "Error", JOptionPane.ERROR_MESSAGE);
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Primero cree la tabla", "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_btnEliminarActionPerformed
 
     /**
      * @param args the command line arguments
@@ -240,8 +333,8 @@ public class SimuladorHash extends javax.swing.JFrame {
     private javax.swing.JTextArea areaLog;
     private javax.swing.JButton btnBuscar;
     private javax.swing.JButton btnCrear;
+    private javax.swing.JButton btnEliminar;
     private javax.swing.JButton btnInsertar;
-    private javax.swing.JButton btnLimpiar;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JScrollPane jScrollPane1;
